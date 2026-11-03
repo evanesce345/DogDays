@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import {
   CalendarDotsIcon,
+  DownloadSimpleIcon,
   HeartIcon,
   TrashIcon,
 } from "@phosphor-icons/react/ssr";
@@ -12,11 +13,17 @@ interface PlanDisplayProps {
   plan: { id: string; title: string; pinned: boolean };
   onPin: () => void;
   onDelete: () => void;
+  onDownload: () => void;
 }
 
 // Saved Plan Component.
 // Contains each "banner" and action buttons for each of the user's saved plans.
-export default function SavedPlan({ plan, onPin, onDelete }: PlanDisplayProps) {
+export default function SavedPlan({
+  plan,
+  onPin,
+  onDelete,
+  onDownload,
+}: PlanDisplayProps) {
   const router = useRouter();
 
   const goToPlan = useCallback(() => {
@@ -37,6 +44,14 @@ export default function SavedPlan({ plan, onPin, onDelete }: PlanDisplayProps) {
       onDelete();
     },
     [onDelete],
+  );
+
+  const handleDownload = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onDownload();
+    },
+    [onDownload],
   );
 
   return (
@@ -68,6 +83,19 @@ export default function SavedPlan({ plan, onPin, onDelete }: PlanDisplayProps) {
             className="hover:text-accent m-0.5 size-7 transition-[color,width,height,margin] hover:m-0 hover:size-8"
           />
         )}
+      </button>
+
+      {/* Download button (converts plan to ics)*/}
+      <button
+        type="button"
+        aria-label={`Download ${plan.title}`}
+        className="cursor-default"
+        onClick={handleDownload}
+      >
+        <DownloadSimpleIcon
+          weight="bold"
+          className="hover:text-accent m-0.5 size-7 transition-[color,width,height,margin] hover:m-0 hover:size-8"
+        />
       </button>
 
       <button
